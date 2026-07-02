@@ -1,0 +1,28 @@
+{
+  "en-US": {
+    "building.crystallizer.title": "Crystallizer",
+    "building.crystallizer.description": "<gl>Coats</gl> corresponding <gl>Parts</gl> with <gl>Unstable Fluid</gl> and <gl>Crystallizes</gl> them.",
+    "building.dissolver.title": "Dissolver",
+    "building.dissolver.description": "Dissolves <gl>Shapes</gl> and produces <gl>Unstable Fluid</gl>.",
+    "building.crystal-group.title": "Crystal Expansion",
+    "wiki.WKFluids_Crystallizer.title": "Crystallizer",
+    "wiki.WKFluids_Crystallizer.text": "Processes <gl>Shapes</gl> by coating corresponding <gl>Parts</gl> with <gl>Unstable Fluid</gl>, transforming them into <gl>Crystal</gl>.",
+    "wiki.WKFluids_Dissolver.title": "Dissolver",
+    "wiki.WKFluids_Dissolver.text": "Dissolve the <gl>shape</gl>, producing an <gl>unstable fluid</gl> carrying <gl>part type</gl> and <gl>color</gl>.",
+    "wiki.WKFluids_UnstableFluid.title": "Unstable Fluid",
+    "wiki.WKFluids_UnstableFluid.text": "A special <gl>fluid</gl> that carries both <gl>part type</gl> and <gl>color</gl>. Produced by the <gl>dissolver</gl>, it is consumed by the <gl>crystal generator</gl> and <gl>crystallizer</gl> to produce corresponding <gl>crystals</gl>."
+  },
+  "zh-Hans": {
+    "building.crystallizer.title": "晶化器",
+    "building.crystallizer.description": "将<gl>不稳定流体 覆盖</gl>在对应的<gl>部件</gl>上并将其<gl>晶化</gl>。",
+    "building.dissolver.title": "溶解器",
+    "building.dissolver.description": "溶解<gl>形状</gl>并产出<gl>不稳定流体</gl>。",
+    "building.crystal-group.title": "晶体扩展",
+    "wiki.WKFluids_Crystallizer.title": "晶化器",
+    "wiki.WKFluids_Crystallizer.text": "用<gl>不稳定流体</gl>覆盖对应<gl>部件</gl>，将其转化为<gl>晶体</gl>。",
+    "wiki.WKFluids_Dissolver.title": "溶解器",
+    "wiki.WKFluids_Dissolver.text": "溶解<gl>形状</gl>，产出携带<gl>部件类型</gl>和<gl>颜色</gl>的<gl>不稳定流体</gl>。",
+    "wiki.WKFluids_UnstableFluid.title": "不稳定流体",
+    "wiki.WKFluids_UnstableFluid.text": "一种特殊的<gl>流体</gl>，同时携带<gl>部件类型</gl>和<gl>颜色</gl>。由<gl>溶解器</gl>产出，被<gl>晶体生成器</gl>和<gl>晶化器</gl>消耗产生对应<gl>晶体</gl>。"
+  }
+}
