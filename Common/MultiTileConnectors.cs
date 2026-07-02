@@ -1,14 +1,10 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Core.Coordinates;
 using ShapezShifter.Flow.Atomic;
 
 namespace CrystalExpansion.Common;
 
-// 多格建筑连接器构建器——流畅式 API 用于声明建筑的瓦片布局和 IO 端口。
-//
-// Build 方法通过计算瓦片集合的 min/max 自动推导 TileBounds、TileDimensions 和中心点，
-// 不需要手动指定建筑尺寸。
 public static class MultiTileConnectors
 {
     public static IMultiTileBuilder Start() => new MultiTileBuilder();
@@ -17,121 +13,129 @@ public static class MultiTileConnectors
 public interface IMultiTileBuilder
 {
     IMultiTileBuilder AddTile(TileVector tile);
-    IMultiTileBuilder AddShapeInput(TileVector tile, ShapeConnectorConfig config);
-    IMultiTileBuilder AddShapeOutput(TileVector tile, ShapeConnectorConfig config);
-    IMultiTileBuilder AddWireInput(TileVector tile, WireConnectorConfig config);
-    IMultiTileBuilder AddWireOutput(TileVector tile, WireConnectorConfig config);
-    IMultiTileBuilder AddFluidInput(TileVector tile, FluidConnectorConfig config);
-    IMultiTileBuilder AddFluidOutput(TileVector tile, FluidConnectorConfig config);
+    IMultiTileBuilder AddShapeInput(TileVector tile, ShapeConnectorConfig shapeConnectorConfig);
+    IMultiTileBuilder AddShapeOutput(TileVector tile, ShapeConnectorConfig shapeConnectorConfig);
+    IMultiTileBuilder AddWireInput(TileVector tile, WireConnectorConfig wireConnectorConfig);
+    IMultiTileBuilder AddWireOutput(TileVector tile, WireConnectorConfig wireConnectorConfig);
+    IMultiTileBuilder AddFluidInput(TileVector tile, FluidConnectorConfig fluidConnectorConfig);
+    IMultiTileBuilder AddFluidOutput(TileVector tile, FluidConnectorConfig fluidConnectorConfig);
     IBuildingConnectorData Build();
 }
 
 public class MultiTileBuilder : IMultiTileBuilder
 {
-    private readonly List<BuildingBaseIO> _connectors = new();
-    private readonly HashSet<TileVector> _tiles = new();
+    private readonly List<BuildingBaseIO> BuildingConnectors = new();
+    private readonly HashSet<TileVector> BuildingTiles = new();
 
     public IMultiTileBuilder AddTile(TileVector tile)
     {
-        _tiles.Add(tile);
+        BuildingTiles.Add(tile);
         return this;
     }
 
-    public IMultiTileBuilder AddShapeInput(TileVector tile, ShapeConnectorConfig config)
+    public IMultiTileBuilder AddShapeInput(TileVector tile, ShapeConnectorConfig shapeConnectorConfig)
     {
-        _tiles.Add(tile);
-        _connectors.Add(new BuildingItemInput
+        BuildingTiles.Add(tile);
+        BuildingConnectors.Add(new BuildingItemInput
         {
             Position_L = tile,
-            Direction_L = config.Direction.Value,
-            StandType = config.StandType,
-            IOType = config.CapsType,
-            Seperators = config.Separators
+            Direction_L = shapeConnectorConfig.Direction.Value,
+            StandType = shapeConnectorConfig.StandType,
+            IOType = shapeConnectorConfig.CapsType,
+            Seperators = shapeConnectorConfig.Separators
         });
         return this;
     }
 
-    public IMultiTileBuilder AddShapeOutput(TileVector tile, ShapeConnectorConfig config)
+    public IMultiTileBuilder AddShapeOutput(TileVector tile, ShapeConnectorConfig shapeConnectorConfig)
     {
-        _tiles.Add(tile);
-        _connectors.Add(new BuildingItemOutput
+        BuildingTiles.Add(tile);
+        BuildingConnectors.Add(new BuildingItemOutput
         {
             Position_L = tile,
-            Direction_L = config.Direction.Value,
-            StandType = config.StandType,
-            IOType = config.CapsType,
-            Seperators = config.Separators
+            Direction_L = shapeConnectorConfig.Direction.Value,
+            StandType = shapeConnectorConfig.StandType,
+            IOType = shapeConnectorConfig.CapsType,
+            Seperators = shapeConnectorConfig.Separators
         });
         return this;
     }
 
-    public IMultiTileBuilder AddWireInput(TileVector tile, WireConnectorConfig config)
+    public IMultiTileBuilder AddWireInput(TileVector tile, WireConnectorConfig wireConnectorConfig)
     {
-        _tiles.Add(tile);
-        _connectors.Add(new BuildingSignalInput
+        BuildingTiles.Add(tile);
+        BuildingConnectors.Add(new BuildingSignalInput
         {
             Position_L = tile,
-            Direction_L = config.Direction.Value,
-            _IOType = config.IoType,
-            TileDirection = config.Direction
+            Direction_L = wireConnectorConfig.Direction.Value,
+            _IOType = wireConnectorConfig.IoType,
+            TileDirection = wireConnectorConfig.Direction
         });
         return this;
     }
 
-    public IMultiTileBuilder AddWireOutput(TileVector tile, WireConnectorConfig config)
+    public IMultiTileBuilder AddWireOutput(TileVector tile, WireConnectorConfig wireConnectorConfig)
     {
-        _tiles.Add(tile);
-        _connectors.Add(new BuildingSignalOutput
+        BuildingTiles.Add(tile);
+        BuildingConnectors.Add(new BuildingSignalOutput
         {
             Position_L = tile,
-            Direction_L = config.Direction.Value,
-            _IOType = config.IoType,
-            TileDirection = config.Direction
+            Direction_L = wireConnectorConfig.Direction.Value,
+            _IOType = wireConnectorConfig.IoType,
+            TileDirection = wireConnectorConfig.Direction
         });
         return this;
     }
 
-    public IMultiTileBuilder AddFluidInput(TileVector tile, FluidConnectorConfig config)
+    public IMultiTileBuilder AddFluidInput(TileVector tile, FluidConnectorConfig fluidConnectorConfig)
     {
-        _tiles.Add(tile);
-        _connectors.Add(new BuildingFluidInput
+        BuildingTiles.Add(tile);
+        BuildingConnectors.Add(new BuildingFluidInput
         {
             Position_L = tile,
-            Direction_L = config.Direction.Value,
-            _IOType = config.IoType,
-            TileDirection = config.Direction
+            Direction_L = fluidConnectorConfig.Direction.Value,
+            _IOType = fluidConnectorConfig.IoType,
+            TileDirection = fluidConnectorConfig.Direction
         });
         return this;
     }
 
-    public IMultiTileBuilder AddFluidOutput(TileVector tile, FluidConnectorConfig config)
+    public IMultiTileBuilder AddFluidOutput(TileVector tile, FluidConnectorConfig fluidConnectorConfig)
     {
-        _tiles.Add(tile);
-        _connectors.Add(new BuildingFluidOutput
+        BuildingTiles.Add(tile);
+        BuildingConnectors.Add(new BuildingFluidOutput
         {
             Position_L = tile,
-            Direction_L = config.Direction.Value,
-            _IOType = config.IoType,
-            TileDirection = config.Direction
+            Direction_L = fluidConnectorConfig.Direction.Value,
+            _IOType = fluidConnectorConfig.IoType,
+            TileDirection = fluidConnectorConfig.Direction
         });
         return this;
     }
 
-    // 通过收集到的瓦片集合自动推导建筑边界和中心点。
-    // center = Lerp(min, max, 0.5) — 各维度的中点。
     public IBuildingConnectorData Build()
     {
-        TileVector[] tilesArray = _tiles.ToArray();
+        TileVector[] tilesArray = new TileVector[BuildingTiles.Count];
+        BuildingTiles.CopyTo(tilesArray);
 
-        int minX = tilesArray.Min(t => t.x);
-        int minY = tilesArray.Min(t => t.y);
-        int minZ = tilesArray.Min(t => t.z);
-        int maxX = tilesArray.Max(t => t.x);
-        int maxY = tilesArray.Max(t => t.y);
-        int maxZ = tilesArray.Max(t => t.z);
+        int minX = int.MaxValue;
+        int minY = int.MaxValue;
+        short minZ = short.MaxValue;
+        int maxX = int.MinValue;
+        int maxY = int.MinValue;
+        short maxZ = short.MinValue;
+        foreach (TileVector tile in BuildingTiles)
+        {
+            if (tile.x < minX) minX = tile.x;
+            if (tile.y < minY) minY = tile.y;
+            if (tile.z < minZ) minZ = tile.z;
+            if (tile.x > maxX) maxX = tile.x;
+            if (tile.y > maxY) maxY = tile.y;
+            if (tile.z > maxZ) maxZ = tile.z;
+        }
 
-        TileVector min = new(minX, minY, (short)minZ);
-        TileVector max = new(maxX, maxY, (short)maxZ);
+        TileVector min = new(minX, minY, minZ);
+        TileVector max = new(maxX, maxY, maxZ);
         LocalTileBounds tileBounds = new(min, max);
         TileDimensions tileDimensions = tileBounds.Dimensions;
         LocalVector center = LocalVector.Lerp(
@@ -140,7 +144,7 @@ public class MultiTileBuilder : IMultiTileBuilder
             t: 0.5f);
 
         return new BuildingConnectorData(
-            allInputs: _connectors,
+            allInputs: BuildingConnectors,
             tiles: tilesArray,
             tileBounds: tileBounds,
             tileBoundsCenter: center,
