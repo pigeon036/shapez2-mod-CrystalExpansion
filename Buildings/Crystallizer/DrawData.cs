@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Core.Coordinates;
 using Game.Core.Rendering;
+using Game.Core.Rendering.MeshGeneration;
 using UnityEngine;
 
 namespace CrystalExpansion.Buildings.Crystallizer;
@@ -16,7 +17,7 @@ public interface ICrystallizerDrawData : IFluidRendererDrawData
     AnimationCurve GrowProgress { get; }
 }
 
-internal class CrystallizerDrawData : ICrystallizerDrawData
+internal class CrystallizerDrawData : ICrystallizerDrawData, IBuildingMirrorableCustomDrawData
 {
     public IBeltLaneRendererDefinition InputBeltLane { get; }
     public IBeltLaneRendererDefinition ProcessingBeltLane { get; }
@@ -56,6 +57,13 @@ internal class CrystallizerDrawData : ICrystallizerDrawData
             new Keyframe(1f, 1f));
 
         FluidFillMeshes = new ILODMesh[] { fluidFillMesh };
+    }
+
+    // Y 轴镜像：传送带（X 轴）、生长曲线（Z 轴）均对 Y 对称，无需改动；
+    // 仅镜像流体填充网格后用原构造函数重建（曲线/lane 确定性重建，与原实例一致）。
+    public IBuildingCustomDrawData Mirror(IMeshCache meshCache)
+    {
+        return new CrystallizerDrawData(meshCache.GenerateMirroredMesh(FluidFillMeshes[0]));
     }
 }
 
