@@ -1,9 +1,6 @@
 using Core.Collections.Scoped;
-using Game.Content.Features;
-using Game.Content.Features.Fluids;
 using Game.Core.Coordinates;
 using Game.Core.Map.Simulation;
-using Game.Core.Research;
 using System.Collections.Generic;
 
 namespace CrystalExpansion.Buildings.Crystallizer;

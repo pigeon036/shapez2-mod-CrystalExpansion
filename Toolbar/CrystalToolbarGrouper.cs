@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using Core.Localization;
 using CrystalExpansion.Common;
-using Game.Core.Content.Buildings;
 using MonoMod.RuntimeDetour;
 using ShapezShifter.Hijack;
 using UnityEngine;

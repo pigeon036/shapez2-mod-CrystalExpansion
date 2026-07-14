@@ -6,7 +6,6 @@ using JetBrains.Annotations;
 using ShapezShifter.Flow;
 using ShapezShifter.Flow.Atomic;
 using ShapezShifter.Flow.Research;
-using ShapezShifter.Flow.Toolbar;
 using ShapezShifter.Kit;
 using CrystalExpansion.Common;
 using ShapezShifter.Textures;

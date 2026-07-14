@@ -1,7 +1,5 @@
 using CrystalExpansion.Common;
 using CrystalExpansion.Mode;
-using Game.Content.Features;
-using MonoMod.RuntimeDetour;
 using ShapezShifter.SharpDetour;
 using Unity.Mathematics;
 

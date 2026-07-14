@@ -5,9 +5,6 @@ using CrystalExpansion.Crystal;
 using CrystalExpansion.Fluid;
 using CrystalExpansion.Mode;
 using CrystalExpansion.Wiki;
-using Game.Content.Features;
-using Game.Orchestration;
-using MonoMod.RuntimeDetour;
 using ShapezShifter.SharpDetour;
 
 namespace CrystalExpansion;

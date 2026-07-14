@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using Game.Content.Features.Fluids;
 using Game.Core.Serialization;
-using Game.Core.Shape.Colors;
 using MonoMod.RuntimeDetour;
 using ShapezShifter.SharpDetour;
 using ILogger = Core.Logging.ILogger;
@@ -64,21 +63,21 @@ internal static partial class ShapeTypedFluidPatches
                     // 之后通过 original(self, visitor) 递归时读取器期望的是 tag 字节，
                     // 而非已被消耗的 inner 颜色码。
                     case 1:
-                    {
-                        byte code = visitor.ReadByte_1();
-                        IShapeColor color = self.ColorScheme.Colors.FirstOrDefault(color => color.Code == code);
-                        if (color == null)
-                            throw new Exception($"Unknown color code: {code}");
-                        return ColorFluid.ForColor(color);
-                    }
+                        {
+                            byte code = visitor.ReadByte_1();
+                            IShapeColor color = self.ColorScheme.Colors.FirstOrDefault(color => color.Code == code);
+                            if (color == null)
+                                throw new Exception($"Unknown color code: {code}");
+                            return ColorFluid.ForColor(color);
+                        }
                     // case 2: 读取 shapeCode → 递归调用 original 解析 inner ColorFluid →
                     // 创建 ShapeTypedFluid 单例。
                     case 2:
-                    {
-                        char shapeCode = (char)visitor.ReadByte_1();
-                        IFluid innerFluid = original(self, visitor);
-                        return ShapeTypedFluid.Create(shapeCode, (ColorFluid)innerFluid);
-                    }
+                        {
+                            char shapeCode = (char)visitor.ReadByte_1();
+                            IFluid innerFluid = original(self, visitor);
+                            return ShapeTypedFluid.Create(shapeCode, (ColorFluid)innerFluid);
+                        }
                     default:
                         throw new Exception($"Invalid serialized fluid tag: {tag}");
                 }

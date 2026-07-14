@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
 using CrystalExpansion.Mode;
-using Game.Content.Features;
 using MonoMod.RuntimeDetour;
 using ShapezShifter.SharpDetour;
 using ILogger = Core.Logging.ILogger;

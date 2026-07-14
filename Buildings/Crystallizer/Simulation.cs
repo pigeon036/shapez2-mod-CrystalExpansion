@@ -1,5 +1,4 @@
 using CrystalExpansion.Fluid;
-using Game.Content.Features;
 using Game.Content.Features.Fluids;
 using Game.Core.Simulation;
 
@@ -52,7 +51,7 @@ public class CrystallizerSimulation : Simulation<CrystallizerSimulationState>, I
 
         // PreAcceptHook：物品进入 InputLane 前的门控条件。
         // ProcessingLane 空闲（无排队物品）+ 容器中流体充足
-        InputLane.PreAcceptHook = _ => 
+        InputLane.PreAcceptHook = _ =>
             !ProcessingLane.HasItem
             && Container.CanTake(ConsumptionPerItem);
 

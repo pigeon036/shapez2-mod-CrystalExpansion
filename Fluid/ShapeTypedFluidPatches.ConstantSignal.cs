@@ -1,10 +1,7 @@
 using System;
-using System.Linq;
 using System.Reflection;
 using CrystalExpansion.Mode;
-using Game.Content.Features.Fluids;
 using Game.Content.Features.Signals;
-using Game.Core.Shape.Colors;
 using MonoMod.RuntimeDetour;
 using ILogger = Core.Logging.ILogger;
 

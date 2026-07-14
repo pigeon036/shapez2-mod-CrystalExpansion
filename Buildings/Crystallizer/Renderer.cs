@@ -1,5 +1,4 @@
 using Game.Core.Coordinates;
-using Game.Core.Rendering;
 using JetBrains.Annotations;
 using Unity.Mathematics;
 using UnityEngine;
@@ -90,7 +89,7 @@ public class CrystallizerRenderer
             && drawData.FluidFillMeshes.Count > 0
             && drawData.FluidFillMeshes[0].TryGet(options.LOD.BuildingLOD, out IMeshReference fluidHandle))
         {
-            #pragma warning disable CS0618 // 类型或成员已过时
+#pragma warning disable CS0618 // 类型或成员已过时
             options.Renderers.FluidsContainer.Draw(
                 options,
                 fluidHandle,
@@ -99,7 +98,7 @@ public class CrystallizerRenderer
                     FastMatrix.RotateY(entity.Transform.Rotation),
                     new float3(1f, simulation.Container.Level, 1f)),
                 simulation.Container.Fluid);
-            #pragma warning restore CS0618 // 类型或成员已过时
+#pragma warning restore CS0618 // 类型或成员已过时
         }
     }
 }

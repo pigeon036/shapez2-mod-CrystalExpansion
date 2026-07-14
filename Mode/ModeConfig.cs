@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using Game.Content.Features;
 
 namespace CrystalExpansion.Mode;
 
@@ -74,8 +73,8 @@ internal static class ModeConfig
         }
         BaseCodes = baseCodes;
 
-    // CrystalCodes 包含所有晶体变体码 + 原版晶体码（若原码不是 'c'，即六分模式的 'h'）。
-    // CrystalLogicPatch.IsCrystalPart 依赖此集合识别晶体部件以判定相邻性。
+        // CrystalCodes 包含所有晶体变体码 + 原版晶体码（若原码不是 'c'，即六分模式的 'h'）。
+        // CrystalLogicPatch.IsCrystalPart 依赖此集合识别晶体部件以判定相邻性。
         HashSet<char> crystalCodes = new(baseToCrystal.Values);
         if (OriginalCrystalCode != 'c')
             crystalCodes.Add(OriginalCrystalCode);

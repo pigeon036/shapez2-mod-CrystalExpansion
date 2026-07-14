@@ -1,7 +1,5 @@
 using System;
 using CrystalExpansion.Common;
-using Game.Orchestration;
-using MonoMod.RuntimeDetour;
 using ILogger = Core.Logging.ILogger;
 
 namespace CrystalExpansion.Fluid;

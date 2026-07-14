@@ -1,5 +1,4 @@
 using Game.Core.Coordinates;
-using Game.Core.Rendering;
 using JetBrains.Annotations;
 using Unity.Mathematics;
 using UnityEngine;
@@ -43,7 +42,7 @@ public class DissolverRenderer
             && drawData.FluidFillMeshes.Count > 0
             && drawData.FluidFillMeshes[0].TryGet(options.LOD.BuildingLOD, out IMeshReference fluidHandle))
         {
-            #pragma warning disable CS0618 // 类型或成员已过时
+#pragma warning disable CS0618 // 类型或成员已过时
             options.Renderers.FluidsContainer.Draw(
                 options,
                 fluidHandle,
@@ -52,7 +51,7 @@ public class DissolverRenderer
                     FastMatrix.RotateY(entity.Transform.Rotation),
                     new float3(1f, simulation.InputTank.Level, 1f)),
                 simulation.InputTank.Fluid);
-            #pragma warning restore CS0618 // 类型或成员已过时
+#pragma warning restore CS0618 // 类型或成员已过时
         }
     }
 }

@@ -1,9 +1,6 @@
 using System;
 using System.Reflection;
 using CrystalExpansion.Mode;
-using Game.Content;
-using Game.Content.Features;
-using Game.Content.Features.Fluids;
 using MonoMod.RuntimeDetour;
 using ShapezShifter.SharpDetour;
 using ILogger = Core.Logging.ILogger;

@@ -1,7 +1,3 @@
-using Game.Content.Features.Fluids;
-using Game.Core.Research;
-using Game.Core.Simulation;
-
 namespace CrystalExpansion.Buildings.Crystallizer;
 
 public interface ICrystallizerConfig

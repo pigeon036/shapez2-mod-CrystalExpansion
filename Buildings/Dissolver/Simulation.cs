@@ -1,5 +1,4 @@
 using CrystalExpansion.Fluid;
-using Game.Content.Features;
 using Game.Content.Features.Fluids;
 using Game.Core.Simulation;
 
@@ -15,7 +14,7 @@ namespace CrystalExpansion.Buildings.Dissolver;
 // 若 NextLane 为 null 则触发 NRE。因此 EndLane 仅用于防止崩溃，物品在到达 EndLane 时被消费。
 //
 // 液体罐最低阈值：40L（hardcoded），低于此值不允许转换。
-public class DissolverSimulation: Simulation<DissolverSimulationState>, IItemSimulation, IFluidSimulation, IUpdatableSimulation
+public class DissolverSimulation : Simulation<DissolverSimulationState>, IItemSimulation, IFluidSimulation, IUpdatableSimulation
 {
     public readonly BeltLane InputLane;
     public readonly DelayBeltLane ProcessingLane;
@@ -56,7 +55,7 @@ public class DissolverSimulation: Simulation<DissolverSimulationState>, IItemSim
         // 2. 输入罐有足够流体（≥ 20L）
         // 3. 流体类型必须是 ColorFluid（不确定形状码时不可溶解）
         // 4. 输出罐有足够剩余容量
-        InputLane.PreAcceptHook = _ => 
+        InputLane.PreAcceptHook = _ =>
             !ProcessingLane.HasItem
             && InputTank.CanTake(ConsumptionPerItem)
             && InputTank.Fluid is ColorFluid

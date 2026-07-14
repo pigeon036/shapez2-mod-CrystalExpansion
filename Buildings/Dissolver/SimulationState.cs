@@ -1,4 +1,3 @@
-using Game.Content.Features;
 using Game.Core.Serialization;
 using Game.Core.Simulation;
 

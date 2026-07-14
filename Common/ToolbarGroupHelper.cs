@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace CrystalExpansion.Common;
 
@@ -18,7 +17,7 @@ internal static class ToolbarGroupHelper
         switch (parent)
         {
             case RootToolbarElementData root: root.Children = children; break;
-            case ParentToolbarElementData pt:  pt.Children = children;  break;
+            case ParentToolbarElementData pt: pt.Children = children; break;
         }
     }
 

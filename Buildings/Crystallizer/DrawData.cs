@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Game.Core.Coordinates;
-using Game.Core.Rendering;
 using Game.Core.Rendering.MeshGeneration;
 using UnityEngine;
 

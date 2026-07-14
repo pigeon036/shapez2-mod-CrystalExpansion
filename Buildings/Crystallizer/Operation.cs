@@ -1,7 +1,6 @@
 using Core.Collections.Scoped;
 using CrystalExpansion.Fluid;
 using CrystalExpansion.Mode;
-using Game.Content.Features;
 
 namespace CrystalExpansion.Buildings.Crystallizer;
 
