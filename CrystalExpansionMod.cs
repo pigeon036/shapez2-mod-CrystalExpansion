@@ -1,6 +1,8 @@
-using CrystalExpansion.Common.BuildingMirror;
+﻿using CrystalExpansion.Buildings.VirtualCrystallizer;
+using CrystalExpansion.Buildings.VirtualDissolver;
 using CrystalExpansion.Buildings.Crystallizer;
 using CrystalExpansion.Buildings.Dissolver;
+using CrystalExpansion.Common.BuildingMirror;
 using CrystalExpansion.Common;
 using CrystalExpansion.Toolbar;
 using JetBrains.Annotations;
@@ -14,9 +16,9 @@ namespace CrystalExpansion;
 [UsedImplicitly]
 public class CrystalExpansionMod : IMod
 {
-    private RewirerHandle _dataHandle;
-    private CrystalToolbarGrouper _toolbarGrouper;
-    private BuildingMirrorService _mirror;
+    private RewirerHandle dataHandle;
+    private CrystalToolbarGrouper crystaltoolbarGrouper;
+    private BuildingMirrorService mirror;
 
     // 构造时依次完成三阶段初始化：
     // 1. GameDataHook — 注入 MonoMod 钩子到游戏初始化流程（ModeConfig / 晶体变体注册）
@@ -34,17 +36,20 @@ public class CrystalExpansionMod : IMod
         Sprite crystalGeneratorIcon = ShapezShifter.Textures.FileTextureLoader.LoadTextureAsSprite(
             locator.SubPath("ToolbarIcon/NewCrystalGenerator_Icon.png"), out _);
 
-        ToolbarGroupBuilder builder = new("building.crystal-group.title", groupIcon);
-        CrystallizerRegistration.Register(logger, locator, builder);
-        DissolverRegistration.Register(logger, locator, builder);
+        ToolbarGroupBuilder toolbarGroup = new("building.crystal-group.title", groupIcon);
+        CrystallizerRegistration.Register(logger, locator, toolbarGroup);
+        DissolverRegistration.Register(logger, locator, toolbarGroup);
 
-        _toolbarGrouper = new CrystalToolbarGrouper(crystalGeneratorIcon, builder);
-        _dataHandle = GameRewirers.AddRewirer<IToolbarDataRewirer>(_toolbarGrouper);
+        VirtualCrystallizerRegistration.Register(logger, locator);
+        VirtualDissolverRegistration.Register(logger, locator);
+
+        crystaltoolbarGrouper = new CrystalToolbarGrouper(crystalGeneratorIcon, toolbarGroup);
+        dataHandle = GameRewirers.AddRewirer<IToolbarDataRewirer>(crystaltoolbarGrouper);
 
         // 为晶化器补上游戏原生镜像能力（Y 轴翻转，流体喂料格北↔南）。
         // 需复用与原建筑一致的模拟 / 预测工厂构建器（模拟/预测按 BuildingDefinitionId 精确匹配）。
-        _mirror = new BuildingMirrorService(logger);
-        _mirror.Mirror(new BuildingDefinitionId("Crystallizer"))
+        mirror = new BuildingMirrorService(logger);
+        mirror.Mirror(new BuildingDefinitionId("Crystallizer"))
             .WithSimulation(new CrystallizerFactoryBuilder())
             .WithPrediction(new CrystallizerPredictionFactoryBuilder());
     }
@@ -54,9 +59,9 @@ public class CrystalExpansionMod : IMod
     // 顺序错误会导致工具栏重建时触发已卸载的钩子。
     public void Dispose()
     {
-        GameRewirers.RemoveRewirer(_dataHandle);
-        _toolbarGrouper.Dispose();
-        _mirror.Dispose();
+        GameRewirers.RemoveRewirer(dataHandle);
+        crystaltoolbarGrouper.Dispose();
+        mirror.Dispose();
         GameDataHook.Dispose();
     }
 }

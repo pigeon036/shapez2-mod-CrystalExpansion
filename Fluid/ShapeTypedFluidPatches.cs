@@ -28,6 +28,7 @@ internal static partial class ShapeTypedFluidPatches
             PatchCrystalOperation(logger);
             PatchMixer(logger);
             PatchPainter(logger);
+            PatchVirtualPainter(logger);
             PatchConstantSignalResolve(logger);
             PatchConstantSignalPrePopulate(logger);
             PatchShapeFactories(logger);

@@ -1,5 +1,7 @@
+using System.Reflection;
 using Game.Content.Features.Fluids;
 using Game.Core.Simulation;
+using MonoMod.RuntimeDetour;
 using ShapezShifter.SharpDetour;
 using ILogger = Core.Logging.ILogger;
 
@@ -13,8 +15,15 @@ namespace CrystalExpansion.Fluid;
 // Painter（上色器）：Postfix Hook 在 Update 执行后检查 State.CurrentProcessingPaint，
 // 如果管道网络交付了 ShapeTypedFluid，则还原为 ColorFluid。
 // 上色器的内部状态依赖 ColorFluid 进行着色计算，ShapeTypedFluid 会破坏其颜色解析逻辑。
+//
+// VirtualPainter（模拟上色器）：Prefix Hook 在 TryExecute 调用前将
+// ShapeTypedFluid 解包为 ColorFluid。虚拟上色器无 CurrentProcessingPaint 缓冲，
+// 信号到达后同帧调用 TryExecute，必须用 PREFIX 在 is ColorFluid 检查前转换。
 internal static partial class ShapeTypedFluidPatches
 {
+    private delegate bool TryExecutePaintTopmostOrig(ShapeOperationPaintTopmost self, IItem input1, IItem input2, ref IItem output);
+    private delegate bool TryExecutePaintTopmostHook(TryExecutePaintTopmostOrig original, ShapeOperationPaintTopmost self, IItem input1, IItem input2, ref IItem output);
+
     private static void PatchMixer(ILogger logger)
     {
         _hooks.Add(DetourHelper.CreatePrefixHook<MixerSimulation, IFluid, IFluid, IFluid>(
@@ -35,5 +44,19 @@ internal static partial class ShapeTypedFluidPatches
                     self.State.CurrentProcessingPaint = shapeTypedFluid.ColorFluid;
             }));
         logger.Info?.Log("ShapeTypedFluidPatches: Painter patched");
+    }
+
+    private static void PatchVirtualPainter(ILogger logger)
+    {
+        MethodInfo method = typeof(ShapeOperationPaintTopmost).GetMethod(
+            nameof(ShapeOperationPaintTopmost.TryExecute));
+        _hooks.Add(new Hook(method,
+            (TryExecutePaintTopmostHook)((TryExecutePaintTopmostOrig original, ShapeOperationPaintTopmost self, IItem input1, IItem input2, ref IItem output) =>
+            {
+                if (input2 is ShapeTypedFluid stf)
+                    input2 = stf.ColorFluid;
+                return original(self, input1, input2, ref output);
+            })));
+        logger.Info?.Log("ShapeTypedFluidPatches: VirtualPainter patched");
     }
 }
