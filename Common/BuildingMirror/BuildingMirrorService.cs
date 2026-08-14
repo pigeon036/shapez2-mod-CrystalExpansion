@@ -42,14 +42,14 @@ public sealed class BuildingMirrorService : IDisposable
     {
         _logger = logger;
         _factoryHook = DetourHelper
-            .CreateStaticPostfixHook<IBuildingsCatalog, AuthoringBuildings, IMeshCache, VisualThemeBaseResources, GameBuildings>(
+            .CreateStaticPostfixHook<IBuildingCatalogPair, AuthoringBuildings, IMeshCache, VisualThemeBaseResources, GameBuildings>(
                 original: (catalog, meta, meshCache, resources) =>
                     GameModeBuildingsFactory.FromMetadata(catalog, meta, meshCache, resources),
                 postfix: Postfix);
     }
 
     private GameBuildings Postfix(
-        IBuildingsCatalog catalog,
+        IBuildingCatalogPair catalog,
         AuthoringBuildings meta,
         IMeshCache meshCache,
         VisualThemeBaseResources theme,

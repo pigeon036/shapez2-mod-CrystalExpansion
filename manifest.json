@@ -1,5 +1,5 @@
 {
-  "Version": "0.8.0",
+  "Version": "0.8.1",
   "Title": "晶体扩展",
   "Description": "重做晶体体系，新增晶体变体、不稳定流体、晶化器与溶解器，修改晶体生成器工作逻辑",
   "Author": "pigeon036",
@@ -15,7 +15,7 @@
     {
       "ModId": "steam:3542611357",
       "ModTitle": "Shapez Shifter",
-      "Version": ">=1.1.0"
+      "Version": ">=1.2.0"
     },
     {
       "ModId": "steam:3542712030",
