@@ -60,8 +60,8 @@ internal static class DissolverRegistration
 
         ((BuildingGroupBuilder)(object)group).LinkedEntryId = new WikiEntryId("WKFluids_Dissolver");
 
-        IBuildingConnectorData connectorData = MultiTileConnectors
-            .Start()
+        IBuildingConnectorData connectorData = BuildingConnectors
+            .MultiTile()
             .AddTile(new TileVector(0, 0, 0))
             .AddTile(new TileVector(0, 0, 1))
             // 形状输入位于上瓦片（z=1），通过传送带输入

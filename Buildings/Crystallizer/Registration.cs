@@ -62,8 +62,8 @@ internal static class CrystallizerRegistration
 
         ((BuildingGroupBuilder)(object)group).LinkedEntryId = new WikiEntryId("WKFluids_Crystallizer");
 
-        IBuildingConnectorData connectorData = MultiTileConnectors
-            .Start()
+        IBuildingConnectorData connectorData = BuildingConnectors
+            .MultiTile()
             .AddTile(new TileVector(0, 0, 0))
             .AddTile(new TileVector(0, 1, 0))
             .AddShapeInput(new TileVector(0, 0, 0), ShapeConnectorConfig.DefaultInput())
