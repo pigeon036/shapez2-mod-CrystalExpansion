@@ -1,4 +1,4 @@
-﻿using CrystalExpansion.Buildings.VirtualCrystallizer;
+using CrystalExpansion.Buildings.VirtualCrystallizer;
 using CrystalExpansion.Buildings.VirtualDissolver;
 using CrystalExpansion.Buildings.Crystallizer;
 using CrystalExpansion.Buildings.Dissolver;
@@ -19,6 +19,7 @@ public class CrystalExpansionMod : IMod
     private RewirerHandle dataHandle;
     private CrystalToolbarGrouper crystaltoolbarGrouper;
     private BuildingMirrorService mirror;
+    private BuildingPredictionRegistry predictionRegistry;
 
     // 构造时依次完成三阶段初始化：
     // 1. GameDataHook — 注入 MonoMod 钩子到游戏初始化流程（ModeConfig / 晶体变体注册）
@@ -27,6 +28,10 @@ public class CrystalExpansionMod : IMod
     // 工具栏构建器在构造时创建并传给两个 Registration，保证建筑和组共享同一个 GroupToolbarElementData 节点。
     public CrystalExpansionMod(ILogger logger)
     {
+        // 预测系统必须独立于 Atomic 链注册（避免预测关闭时建筑链无法重启）。
+        // 注册器由入口创建并持有，传给各建筑 Registration 自行注册预测工厂。
+        predictionRegistry = new BuildingPredictionRegistry(logger);
+
         GameDataHook.Initialize(logger);
 
         ModFolderLocator locator = ModDirectoryLocator.CreateLocator<CrystalExpansionMod>().SubLocator("Resources");
@@ -37,8 +42,8 @@ public class CrystalExpansionMod : IMod
             locator.SubPath("ToolbarIcon/NewCrystalGenerator_Icon.png"), out _);
 
         ToolbarGroupBuilder toolbarGroup = new("building.crystal-group.title", groupIcon);
-        CrystallizerRegistration.Register(logger, locator, toolbarGroup);
-        DissolverRegistration.Register(logger, locator, toolbarGroup);
+        CrystallizerRegistration.Register(logger, locator, toolbarGroup, predictionRegistry);
+        DissolverRegistration.Register(logger, locator, toolbarGroup, predictionRegistry);
 
         VirtualCrystallizerRegistration.Register(logger, locator);
         VirtualDissolverRegistration.Register(logger, locator);
@@ -62,6 +67,7 @@ public class CrystalExpansionMod : IMod
         GameRewirers.RemoveRewirer(dataHandle);
         crystaltoolbarGrouper.Dispose();
         mirror.Dispose();
+        predictionRegistry.Dispose();
         GameDataHook.Dispose();
     }
 }

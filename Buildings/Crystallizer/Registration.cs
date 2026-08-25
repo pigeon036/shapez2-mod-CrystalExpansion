@@ -1,4 +1,5 @@
 using Core.Localization;
+using CrystalExpansion.Common;
 using Game.Core.Content.Buildings;
 using Game.Core.Coordinates;
 using Game.Core.Research;
@@ -7,7 +8,6 @@ using ShapezShifter.Flow;
 using ShapezShifter.Flow.Atomic;
 using ShapezShifter.Flow.Research;
 using ShapezShifter.Kit;
-using CrystalExpansion.Common;
 using ShapezShifter.Textures;
 using UnityEngine;
 using ILogger = Core.Logging.ILogger;
@@ -34,7 +34,11 @@ using DrawData = ICrystallizerDrawData;
 [UsedImplicitly]
 internal static class CrystallizerRegistration
 {
-    public static void Register(ILogger logger, ModFolderLocator locator, ToolbarGroupBuilder toolbarGroupBuilder)
+    public static void Register(
+        ILogger logger,
+        ModFolderLocator locator,
+        ToolbarGroupBuilder toolbarGroupBuilder,
+        BuildingPredictionRegistry predictionRegistry)
     {
         BuildingDefinitionGroupId groupId = new("CrystallizerGroup");
         BuildingDefinitionId definitionId = new("Crystallizer");
@@ -93,8 +97,14 @@ internal static class CrystallizerRegistration
             .InToolbar(toolbarGroupBuilder.ToolbarLocation)
             .WithSimulation(new CrystallizerFactoryBuilder(), logger)
             .WithCustomModules(new CrystallizerBuildingModules(new ResearchSpeedId("CutterSpeed")))
-            .WithPrediction(new CrystallizerPredictionFactoryBuilder(), logger)
+            // 预测系统由传入的 BuildingPredictionRegistry 独立注册（入口持有并 Dispose）。
+            // 不能放进 Atomic 链：玩家关闭预测显示时 prediction extender 不执行，
+            // 链不重启，下一次加载本建筑会从 GameBuildings 中消失。
+            .WithoutPrediction()
             .Build();
+
+        // 预测系统独立于 Atomic 链注册，由入口持有并负责 Dispose（见 BuildingPredictionRegistry）。
+        predictionRegistry.Register(definitionId, new CrystallizerPredictionFactoryBuilder());
     }
 
     private static BuildingDrawData CreateDrawData(ModFolderLocator locator, LOD6Mesh fluidMeshLod)
