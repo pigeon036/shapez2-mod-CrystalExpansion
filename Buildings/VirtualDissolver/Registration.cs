@@ -7,7 +7,6 @@ using JetBrains.Annotations;
 using ShapezShifter.Flow;
 using ShapezShifter.Flow.Atomic;
 using ShapezShifter.Flow.Research;
-using ShapezShifter.Flow.Toolbar;
 using ShapezShifter.Kit;
 using ShapezShifter.Textures;
 using UnityEngine;
@@ -68,8 +67,8 @@ internal static class VirtualDissolverRegistration
             .WithBuilding(buildingBuilder, group)
             .UnlockedAtMilestone(milestoneUnlockedBuilder)
             .WithDefaultPlacement()
-            .InToolbar(
-                ToolbarElementLocator.Root().ChildAt(2).ChildAt(7).ChildAt(6).InsertBefore())
+            // 按 VirtualCrystalGenerator 锚定，不依赖它在 VirtualProcessorsGroup 里的绝对索引
+            .InToolbar(AnchorToolbarLocation.Before("VirtualCrystalGeneratorDefaultVariant", logger))
             .WithSimulation(new VirtualDissolverFactoryBuilder(), logger)
             .WithCustomModules(new Virtual2In1OutBuildingModuleDataProvider("Fluid", "Shape"))
             .WithoutPrediction()

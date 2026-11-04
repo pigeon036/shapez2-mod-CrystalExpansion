@@ -20,7 +20,7 @@ namespace CrystalExpansion.Fluid;
 // 无公开可重写钩子，因此必须通过反射 Hook 非公开方法。
 internal static partial class ShapeTypedFluidPatches
 {
-    private static readonly Type ProviderType = typeof(ConstantSignalBuildingModuleDataProvider);
+    private static readonly Type _providerType = typeof(ConstantSignalBuildingModuleDataProvider);
 
     // Hook 非公开的 ResolveValue 方法。
     // 当文本框中的内容以 "fluid-" 开头时，解析协议并构造 FluidSignal(ShapeTypedFluid)。
@@ -28,7 +28,7 @@ internal static partial class ShapeTypedFluidPatches
     // ColorCode 从游戏的颜色方案中查找（如果找不到则返回 NullSignal.Instance）。
     private static void PatchConstantSignalResolve(ILogger logger)
     {
-        MethodInfo method = ProviderType.GetMethod("ResolveValue", BindingFlags.NonPublic | BindingFlags.Instance);
+        MethodInfo method = _providerType.GetMethod("ResolveValue", BindingFlags.NonPublic | BindingFlags.Instance);
         _hooks.Add(new Hook(method,
             new Func<Func<object, string, ISignal>, object, string, ISignal>(
                 (original, self, text) =>
@@ -63,7 +63,7 @@ internal static partial class ShapeTypedFluidPatches
     // 确保 UI 文本框正确回显（而非显示默认文本或错误字符串）。
     private static void PatchConstantSignalPrePopulate(ILogger logger)
     {
-        MethodInfo method = ProviderType.GetMethod("GetPrePopulatedText", BindingFlags.NonPublic | BindingFlags.Instance);
+        MethodInfo method = _providerType.GetMethod("GetPrePopulatedText", BindingFlags.NonPublic | BindingFlags.Instance);
         _hooks.Add(new Hook(method,
             new Func<Func<object, ISignal, string>, object, ISignal, string>(
                 (original, self, signal) =>

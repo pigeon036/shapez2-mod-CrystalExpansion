@@ -41,11 +41,11 @@ internal static class CrystalWikiRegistration
 
             WikiEntryHelper.RebuildKnowledgePanel(orchestrator);
 
-            logger.Info?.Log("WikiEntryHelper: injected 3 wiki entries");
+            logger.Info?.Log("Wiki: injected 3 wiki entries");
         }
         catch (Exception ex)
         {
-            logger.Error?.Log($"WikiEntryHelper: Inject failed - {ex}");
+            logger.Error?.Log($"Wiki: Inject failed - {ex}");
         }
     }
 }

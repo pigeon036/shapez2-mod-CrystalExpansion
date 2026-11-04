@@ -9,7 +9,7 @@ using ILogger = Core.Logging.ILogger;
 
 namespace CrystalExpansion.Crystal;
 
-internal static class NewCrystalRegistry
+internal static class CrystalVariantRegistry
 {
     // 向游戏的 ShapesConfiguration 中注入晶体部件（更新原版 FBX + 创建新变体 ScriptableObject）。
     // 两遍遍历：

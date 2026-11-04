@@ -14,14 +14,14 @@ using ILogger = Core.Logging.ILogger;
 
 namespace CrystalExpansion.Common.BuildingMirror;
 
-// 通用建筑镜像服务（独立可移植）。
+// 通用建筑镜像注册器（独立可移植）。
 //
 // 为通过 Shifter Atomic API 注册的建筑补上游戏原生镜像能力：Atomic API 每组只放 1 个定义
-// → SinglePlacer（无镜像）。本服务在建筑创建后向目标组注入一个 Y 轴镜像孪生定义，使组内定义
+// → SinglePlacer（无镜像）。本注册器在建筑创建后向目标组注入一个 Y 轴镜像孪生定义，使组内定义
 // 数变为 2，游戏随后自动创建 FlippableSinglePlacer（含镜像键 building-placement.mirror）。
 //
 // 用法：
-//   _mirror = new BuildingMirrorService(logger);
+//   _mirror = new BuildingMirrorRegistry(logger);
 //   _mirror.Mirror(new BuildingDefinitionId("Dissolver"))
 //          .WithSimulation(new DissolverFactoryBuilder())
 //          .WithPrediction(new DissolverPredictionFactoryBuilder());
@@ -29,7 +29,7 @@ namespace CrystalExpansion.Common.BuildingMirror;
 //   _mirror.Dispose();
 //
 // 注意：完整动态镜像要求使用方的动态 DrawData 实现 IBuildingMirrorableCustomDrawData。
-public sealed class BuildingMirrorService : IDisposable
+public sealed class BuildingMirrorRegistry : IDisposable
 {
     private readonly ILogger _logger;
     private readonly List<BuildingDefinitionId> _targets = new();
@@ -38,7 +38,7 @@ public sealed class BuildingMirrorService : IDisposable
 
     // 构造即安装工厂后置钩。钩在 Shifter 的 BuildingsInterceptor 之后加入，MonoMod 使其处于
     // 最外层，后置逻辑在 Shifter 填充完组之后运行，从而看到完整的组定义。
-    public BuildingMirrorService(ILogger logger)
+    public BuildingMirrorRegistry(ILogger logger)
     {
         _logger = logger;
         _factoryHook = DetourHelper
@@ -92,13 +92,13 @@ public sealed class BuildingMirrorService : IDisposable
 // 提供与 Shifter 两种工厂形态对应的重载：无状态 / 有状态模拟，无配置 / 带配置预测。
 public sealed class MirrorTarget
 {
-    private readonly BuildingMirrorService _service;
+    private readonly BuildingMirrorRegistry _registry;
     private readonly BuildingDefinitionId _mirrorId;
     private readonly ILogger _logger;
 
-    internal MirrorTarget(BuildingMirrorService service, BuildingDefinitionId originalId, ILogger logger)
+    internal MirrorTarget(BuildingMirrorRegistry registry, BuildingDefinitionId originalId, ILogger logger)
     {
-        _service = service;
+        _registry = registry;
         _mirrorId = MirrorNaming.MirrorId(originalId);
         _logger = logger;
     }
@@ -134,7 +134,7 @@ public sealed class MirrorTarget
 
     private MirrorTarget Register<TRewirer>(TRewirer rewirer) where TRewirer : IRewirer
     {
-        _service.TrackHandle(GameRewirers.AddRewirer(rewirer));
+        _registry.TrackHandle(GameRewirers.AddRewirer(rewirer));
         return this;
     }
 }

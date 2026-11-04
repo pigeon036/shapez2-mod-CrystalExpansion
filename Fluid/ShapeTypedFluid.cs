@@ -15,7 +15,7 @@ public class ShapeTypedFluid : IFluid
     public char ShapeCode { get; }
     public ColorFluid ColorFluid { get; }
 
-    private static readonly ConcurrentDictionary<(char, ColorFluid), ShapeTypedFluid> Cache = new();
+    private static readonly ConcurrentDictionary<(char, ColorFluid), ShapeTypedFluid> _cache = new();
     private static FluidRegistry _registry;
 
     private ShapeTypedFluid(char shapeCode, ColorFluid colorFluid)
@@ -30,7 +30,7 @@ public class ShapeTypedFluid : IFluid
     // 进入仿真循环后 G 已赋值，后续 Create 调用正常注册。
     public static ShapeTypedFluid Create(char shapeCode, ColorFluid colorFluid)
     {
-        return Cache.GetOrAdd((shapeCode, colorFluid), key =>
+        return _cache.GetOrAdd((shapeCode, colorFluid), key =>
         {
             ShapeTypedFluid shapeTypedFluid = new(key.Item1, key.Item2);
             _registry ??= StaticGameCoreAccessor.G?.FluidRegistry;

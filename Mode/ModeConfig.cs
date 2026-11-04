@@ -21,7 +21,7 @@ internal static class ModeConfig
     // CrystallizerOperation 和 CrystalGeneratorPatch 共享
     public static IReadOnlyDictionary<char, IShapeSubPart> BaseCodeToCrystalPart { get; internal set; }
 
-    // 必须在 GameDataHook 前缀中最早调用，为后续 NewCrystalRegistry 和 ShapeTypedFluidPatches 提供配置。
+    // 必须在 GameDataHook 前缀中最早调用，为后续 CrystalVariantRegistry 和 ShapeTypedFluidPatches 提供配置。
     // 通过 config.PartCount 判断模式：4（四分）/ 6（六分）。
     public static void Initialize(IShapesConfiguration config)
     {

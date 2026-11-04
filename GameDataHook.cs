@@ -9,14 +9,19 @@ using ShapezShifter.SharpDetour;
 
 namespace CrystalExpansion;
 
+// 游戏数据阶段的引导模块，由组合根 CrystalExpansionMod 调用。
+//
+// 在 GameSessionOrchestrator.Init_3_2_EssentialManagers 之前安装补丁与钩子，并在前缀里完成
+// 晶体变体 / Wiki / 流体补丁所需的会话初始化。
+//
+// 时机：Init_3_2 时 ShapesConfiguration 已加载但 GameData 尚未被其他系统消费，是注入新晶体的最晚安全时机；
+// 更早的 Init 步骤可能还没加载 Parts 列表，更晚的步骤已开始使用原始部件数据。
 internal static class GameDataHook
 {
     private static readonly HookCollection _hooks = new();
-    private static Core.Logging.ILogger _logger;
+    private static ILogger _logger;
 
-    // 整个模组的引导入口。挂载在 GameSessionOrchestrator.Init_3_2_EssentialManagers 上：
-    // 此时 ShapesConfiguration 已加载但 GameData 尚未被其他系统消费，是注入新晶体的最晚安全时机。
-    // 更早的 Init 步骤可能尚未加载 Parts 列表；更晚的步骤则已开始使用原始部件数据。
+    // 由组合根在构造期调用一次；重复调用会重复安装钩子。
     public static void Initialize(ILogger logger)
     {
         _logger = logger;
@@ -25,7 +30,7 @@ internal static class GameDataHook
         {
             // 独立的静态钩子（不依赖 orchestrator 引用），提前安装。
             CrystalLogicPatch.Initialize();
-            // ShapeTypedFluid 的 10 个子补丁也在此安装，但其中需要 _orch 引用的补丁
+            // ShapeTypedFluid 的全部子补丁也在此安装，但其中需要 orchestrator 引用的补丁
             // 直到 StoreOrchestrator 被调用后才可用。
             ShapeTypedFluidPatches.Apply(logger);
 
@@ -49,18 +54,19 @@ internal static class GameDataHook
                             crystalMeta._Code = 'h';
                             _logger.Info?.Log("GameDataHook: hex crystal code changed to 'h'");
                         }
-                        // 初始化顺序至关重要：
-                        // 1. ModeConfig — 先构建模式配置（BaseCodes/CrystalCodes/FbxPaths）
-                        // 2. NewCrystalRegistry — 依赖 ModeConfig 的映射表来插入变体部件
-                        // 3. StoreOrchestrator — 后续 Hook 委托中需要 _orch 引用
+                        // 初始化顺序：
+                        // 1. ModeConfig — 先构建模式配置（BaseCodes / CrystalCodes / FbxPaths）
+                        // 2. CrystalVariantRegistry — 依赖 ModeConfig 的映射表来插入变体部件
+                        // 3. CrystalWikiRegistration — 注入 wiki 条目，需要会话的 wiki 数据已就绪
+                        // 4. StoreOrchestrator — 后续 Hook 委托需要 orchestrator 引用
                         ModeConfig.Initialize(config);
-                        NewCrystalRegistry.Inject(config, _logger);
+                        CrystalVariantRegistry.Inject(config, _logger);
                         CrystalWikiRegistration.Inject(self, _logger);
                         ShapeTypedFluidPatches.StoreOrchestrator(self);
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error?.Log($"GameDataHook: {ex}");
+                        _logger.Error?.Log($"GameDataHook: session initialization failed - {ex}");
                     }
                     return (data, isNew);
                 }));
@@ -72,6 +78,7 @@ internal static class GameDataHook
         }
     }
 
+    // 由组合根在卸载时调用：先卸补丁，再卸载 Init_3_2 前缀钩子。
     public static void Dispose()
     {
         CrystalLogicPatch.Dispose();

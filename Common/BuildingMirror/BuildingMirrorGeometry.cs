@@ -60,9 +60,9 @@ internal static class BuildingDefinitionMirror
 // 现有/未来 IO 类型），只覆写需要镜像的 Position_L 与 TileDirection。
 internal static class ConnectorDataMirror
 {
-    private static readonly TileAxis Axis = TileAxis.YAxis;
+    private static readonly TileAxis _axis = TileAxis.YAxis;
 
-    private static readonly MethodInfo MemberwiseCloneMethod =
+    private static readonly MethodInfo _memberwiseCloneMethod =
         typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic);
 
     public static IBuildingConnectorData Mirror(IBuildingConnectorData source)
@@ -75,7 +75,7 @@ internal static class ConnectorDataMirror
         TileVector[] sourceTiles = source.Tiles;
         var mirroredTiles = new TileVector[sourceTiles.Length];
         for (int i = 0; i < sourceTiles.Length; i++)
-            mirroredTiles[i] = sourceTiles[i].MirrorOver(Axis);
+            mirroredTiles[i] = sourceTiles[i].MirrorOver(_axis);
 
         LocalTileBounds bounds = ComputeBounds(mirroredTiles);
         TileDimensions dimensions = bounds.Dimensions;
@@ -86,13 +86,13 @@ internal static class ConnectorDataMirror
 
     private static IBuildingIO MirrorIO(IBuildingIO io)
     {
-        var clone = (IBuildingIO)MemberwiseCloneMethod.Invoke(io, null);
+        var clone = (IBuildingIO)_memberwiseCloneMethod.Invoke(io, null);
         var baseClone = (BuildingBaseIO)clone;
         var baseSource = (BuildingBaseIO)io;
 
-        baseClone.Position_L = baseSource.Position_L.MirrorOver(Axis);
+        baseClone.Position_L = baseSource.Position_L.MirrorOver(_axis);
         // TileDirection.Mirror(YAxis) 对 North/South 返回 Opposite，对 East/West/Up/Down 原样返回。
-        baseClone.TileDirection = baseSource.TileDirection.Mirror(Axis);
+        baseClone.TileDirection = baseSource.TileDirection.Mirror(_axis);
         return clone;
     }
 

@@ -106,7 +106,7 @@ internal static partial class ShapeTypedFluidPatches
         }
         catch (Exception ex)
         {
-            _logger.Error?.Log($"CrystalGen: error - {ex}");
+            _logger.Error?.Log($"ShapeTypedFluidPatches: CrystalGenerator error - {ex}");
             return false;
         }
     }

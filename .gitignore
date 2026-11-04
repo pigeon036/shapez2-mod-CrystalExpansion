@@ -19,4 +19,5 @@ artifacts/
 *.sln.ide
 
 README.md
+CONVENTIONS.md
 Steam/
